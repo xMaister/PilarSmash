@@ -8,7 +8,8 @@ Minijuego "machaca al topo" con las caras del grupo. HTML, CSS y JS puros, pensa
 |---|---|
 | `index.html` | Estructura: marcador, tablero y pantallas de inicio (la foto), cuenta atrás y final |
 | `style.css` | Estética arcade, agujeros, animaciones (aplastado, martillo, estrellas) |
-| `game.js` | Lógica del juego, sonidos (Web Audio API), récord en `localStorage` |
+| `game.js` | Lógica de los topos, intro de la foto, sonidos (Web Audio API), récord en `localStorage` |
+| `boss.js` | Fase boss: ¡alerta!, elige campeón, carrera con la tarta hasta Laura y fiesta de cumpleaños |
 | `foto.jpg` | Foto original: es la pantalla de inicio, de ella salen volando las caras |
 | `faces/1-6.png` | Caras recortadas (círculo con fondo transparente) |
 | `faces/caras.js` | Posición de cada cara en la foto (para la animación de la intro) |
@@ -32,9 +33,17 @@ vercel          # primera vez: crea el proyecto y da una URL de preview
 vercel --prod   # publica en producción
 ```
 
+## Cómo es una partida
+
+1. Pantalla de inicio con la foto. Al pulsar JUGAR las caras salen volando de la foto a los agujeros.
+2. Topos: machaca las caras. El marcador dice 30 s, pero...
+3. A los 10 s: **¡ALERTA! ¡ALERTA!** Fase boss: elige a tu campeón (todas las cabezas menos la de Laura).
+4. Misión: es el cumple de Laura. Cae una tarta en manos de tu campeón y hay que llevársela saltando palomas y pivotes (toca la pantalla, o espacio en el ordenador). Tropezar te hace perder unos metros, pero nunca pierdes.
+5. Tarta entregada: ¡fiesta con todas las cabezas y "Cumpleaños feliz" en chiptune!
+
 ## Ajustar el juego
 
-Al principio de `game.js`: `DURACION`, `MAX_A_LA_VEZ`, `ESPERA_INICIO` / `ESPERA_FINAL` (ritmo de apariciones) y `VISIBLE_MIN` / `VISIBLE_MAX` (tiempo que se queda cada cara).
+Al principio de `game.js`: `LAURA` (número de su cara), `BOSS_EN` (segundos hasta la alerta; 0 la desactiva y la partida dura los 30 s), `DURACION`, `MAX_A_LA_VEZ`, `ESPERA_INICIO` / `ESPERA_FINAL` (ritmo de apariciones) y `VISIBLE_MIN` / `VISIBLE_MAX` (tiempo que se queda cada cara). En `boss.js`, el objeto `RUN` controla la carrera: metros hasta Laura, retroceso al tropezar, etc.
 
 ## Regenerar las caras
 

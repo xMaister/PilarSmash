@@ -66,7 +66,79 @@
       <div class="countdown" id="countdown">3</div>
     </section>
 
-    <!-- Pantalla final -->
+    <!-- ===== FASE BOSS (boss.js) ===== -->
+
+    <!-- ¡Alerta! -->
+    <section class="screen alert hidden" id="screen-alert">
+      <div class="hazard"></div>
+      <div class="alert-text">¡ALERTA!</div>
+      <div class="alert-text">¡ALERTA!</div>
+      <div class="alert-sub" id="alert-sub">&nbsp;</div>
+      <div class="hazard"></div>
+    </section>
+
+    <!-- Elige a tu campeón (todas las cabezas menos la de Laura) -->
+    <section class="screen solid hidden" id="screen-choose">
+      <h2 class="title boss-title">ELIGE A TU<br><span>CAMPEON</span></h2>
+      <div class="champ-grid" id="champ-grid"></div>
+      <p class="info" id="champ-msg">Toca una cabeza</p>
+    </section>
+
+    <!-- Misión: la tarta para Laura -->
+    <section class="screen solid hidden" id="screen-mission">
+      <p class="subtitle">MISION ESPECIAL</p>
+      <h2 class="title boss-title">¡HOY ES EL<br>CUMPLE DE<br><span>LAURA!</span></h2>
+      <div class="mission-stage">
+        <div class="mission-champ">
+          <img id="mission-champ" alt="Tu campeón" draggable="false">
+          <canvas class="mission-cake" id="mission-cake" width="240" height="170"></canvas>
+        </div>
+        <div class="mission-arrow">&gt;&gt;</div>
+        <div class="face-hat">
+          <img src="faces/2.png" alt="Laura" id="mission-laura" draggable="false">
+          <div class="hat"></div>
+        </div>
+      </div>
+      <p class="info">Llévale la tarta a Laura.<br>Toca la pantalla para saltar.</p>
+      <button class="btn" id="btn-run">¡VAMOS!</button>
+    </section>
+
+    <!-- Carrera con la tarta (canvas) -->
+    <section class="screen solid runner hidden" id="screen-run">
+      <div class="run-hud">
+        <span class="hud-label">DISTANCIA A LAURA</span>
+        <div class="dist-row">
+          <div class="dist-bar"><div class="dist-fill" id="dist-fill"></div></div>
+          <img src="faces/2.png" alt="" class="dist-laura" id="dist-laura" draggable="false">
+        </div>
+        <span class="hud-value" id="dist-num">120 m</span>
+      </div>
+      <canvas class="run-canvas" id="run-canvas"></canvas>
+      <p class="info small" id="run-hint">TOCA PARA SALTAR</p>
+    </section>
+
+    <!-- ¡Fiesta! -->
+    <section class="screen solid party hidden" id="screen-party">
+      <canvas class="confetti" id="confetti"></canvas>
+      <h2 class="party-title">¡HAS CONSEGUIDO<br>FELICITAR A <span>LAURA!</span></h2>
+      <div class="party-stage">
+        <div class="face-hat laura-big">
+          <img src="faces/2.png" alt="Laura" id="party-laura" draggable="false">
+          <div class="hat"></div>
+        </div>
+        <canvas class="party-cake" id="party-cake" width="240" height="170"></canvas>
+        <div class="party-row" id="party-row"></div>
+      </div>
+      <p class="party-banner">¡FELIZ CUMPLE!</p>
+      <div class="party-end" id="party-end">
+        <p class="info">TOPOS: <span id="party-topos">0</span> &nbsp; TROPIEZOS: <span id="party-trips">0</span></p>
+        <p class="new-record hidden" id="party-record">¡RECORD DE TOPOS!</p>
+        <button class="btn" id="btn-party-again">REPETIR</button>
+        <button class="btn-link" id="btn-party-photo">VER LA FOTO</button>
+      </div>
+    </section>
+
+    <!-- Pantalla final (solo si se desactiva la fase boss) -->
     <section class="screen hidden" id="screen-end">
       <h2 class="title small">¡TIEMPO!</h2>
       <p class="info">PUNTOS</p>
@@ -82,5 +154,6 @@
   <!-- Script normal (no módulo) para que funcione abriendo el archivo sin servidor -->
   <script src="faces/caras.js"></script>
   <script src="game.js"></script>
+  <script src="boss.js"></script>
 </body>
 </html>

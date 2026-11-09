@@ -9,6 +9,8 @@ const MAX_A_LA_VEZ = 2;       // caras visibles como máximo
 const NUM_CARAS = 6;          // faces/1.png ... faces/6.png
 const NUM_AGUJEROS = 9;       // tablero 3x3
 const CLAVE_RECORD = "pilarsmash-record";
+const LAURA = 2;              // faces/2.png es Laura: no se puede elegir de campeona y recibe la tarta
+const BOSS_EN = 10;           // segundos de topos antes de la ¡ALERTA! (fase boss en boss.js). 0 = sin boss
 
 // Dificultad: valores al principio (p=0) y al final (p=1) de la partida
 const ESPERA_INICIO = 950;    // ms entre apariciones al empezar
@@ -38,6 +40,7 @@ let jugando = false;
 let inicio = 0;          // performance.now() al empezar
 let timerAparicion = null;
 let ultimoSegundo = DURACION;
+let bossLanzado = false;
 
 /* ==========================================================
    SONIDOS (Web Audio API, todo sintetizado)
@@ -419,7 +422,7 @@ function efectos(el) {
    FLUJO DE LA PARTIDA
    ========================================================== */
 function mostrar(pantalla) {
-  [ui.start, ui.count, ui.end].forEach((p) => p.classList.toggle("hidden", p !== pantalla));
+  document.querySelectorAll(".screen").forEach((p) => p.classList.toggle("hidden", p !== pantalla));
 }
 
 // Cuenta atrás 3, 2, 1, ¡YA! y empieza
@@ -455,6 +458,7 @@ function resetearMarcador() {
 function empezar() {
   mostrar(null);
   jugando = true;
+  bossLanzado = false;
   inicio = performance.now();
   programarAparicion(300);
   requestAnimationFrame(actualizarTiempo);
@@ -476,6 +480,13 @@ function actualizarTiempo() {
       ui.time.classList.add("hurry");
       sonido.tic();
     }
+  }
+
+  // A los BOSS_EN segundos, ¡sorpresa!: la partida se interrumpe y empieza la fase boss (boss.js)
+  if (BOSS_EN && !bossLanzado && performance.now() - inicio >= BOSS_EN * 1000) {
+    bossLanzado = true;
+    iniciarBoss();
+    return;
   }
 
   if (p >= 1) terminar();

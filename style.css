@@ -427,3 +427,320 @@ body::after {
 @keyframes blink {
   50% { opacity: .35; }
 }
+
+/* ==========================================================
+   FASE BOSS: alerta, elige campeón, misión, carrera y fiesta
+   ========================================================== */
+
+/* Pantallas opacas (tapan el tablero por completo) */
+.screen.solid {
+  background: radial-gradient(circle at 50% 0%, var(--bg2) 0%, var(--bg) 70%);
+  backdrop-filter: none;
+}
+
+/* ---------- ¡Alerta! ---------- */
+.screen.alert {
+  background: #000;
+  backdrop-filter: none;
+  gap: 18px;
+  animation: alertflash .45s steps(2) infinite;
+}
+@keyframes alertflash {
+  0%   { background: #000; }
+  100% { background: #b0001e; }
+}
+.hazard {
+  width: 120%;
+  height: 26px;
+  background: repeating-linear-gradient(45deg, var(--yellow) 0 18px, #000 18px 36px);
+  animation: hazard .6s linear infinite;
+}
+@keyframes hazard {
+  to { background-position: 51px 0; }
+}
+.alert-text {
+  font-size: clamp(34px, 12vw, 56px);
+  color: #fff;
+  text-shadow: 4px 4px 0 #000, 0 0 20px #ff0033;
+  animation: shake .12s linear infinite;
+}
+.alert-text + .alert-text { animation-delay: .06s; }
+@keyframes shake {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-3px, 2px); }
+  50%  { transform: translate(3px, -2px); }
+  75%  { transform: translate(-2px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+.alert-sub {
+  font-size: clamp(18px, 6vw, 26px);
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 #000;
+  min-height: 1.2em;
+}
+.alert-sub.show { animation: zoom .4s ease-out; }
+
+/* Títulos de la fase boss: algo más pequeños para que no partan palabras */
+.title.boss-title { font-size: clamp(20px, 7vw, 32px); }
+
+/* ---------- Elige a tu campeón ---------- */
+.champ-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 360px;
+}
+.champ {
+  width: calc((100% - 28px) / 3);
+  aspect-ratio: 1;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  opacity: 0;
+  transform: scale(0);
+  transition: transform .25s ease, opacity .25s ease, filter .25s ease;
+}
+.champ img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--cyan), 0 0 14px var(--cyan);
+  pointer-events: none;
+}
+.champ.in {
+  opacity: 1;
+  transform: scale(1);
+  animation: champpop .35s cubic-bezier(.2, 1.6, .5, 1);
+}
+@keyframes champpop {
+  from { transform: scale(0) rotate(-30deg); }
+  to   { transform: scale(1) rotate(0); }
+}
+.champ.in:active { transform: scale(.92); }
+.champ.out { opacity: .15; transform: scale(.75); filter: grayscale(1); }
+.champ.chosen { transform: scale(1.25); z-index: 2; }
+.champ.chosen img { box-shadow: 0 0 0 4px var(--yellow), 0 0 26px var(--yellow); }
+
+/* ---------- Gorro de fiesta (sobre una cara) ---------- */
+.face-hat {
+  position: relative;
+}
+.face-hat img {
+  display: block;
+  width: 100%;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--pink);
+}
+.hat {
+  position: absolute;
+  left: 50%;
+  bottom: 84%;
+  width: 46%;
+  aspect-ratio: .8;
+  transform: translateX(-50%) rotate(-10deg);
+  transform-origin: 50% 100%;
+}
+.hat::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: repeating-linear-gradient(-35deg, var(--yellow) 0 7px, var(--pink) 7px 14px);
+}
+.hat::after { /* pompón */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -12%;
+  width: 26%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+/* ---------- Misión ---------- */
+.mission-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  padding-top: 18px;
+  padding-bottom: 48px; /* hueco para la tarta, que cuelga por debajo del campeón */
+}
+.mission-champ {
+  position: relative;
+  width: min(34vw, 140px);
+}
+.mission-champ img {
+  display: block;
+  width: 100%;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--yellow), 0 0 16px var(--yellow);
+}
+/* La tarta cae del cielo a las manos del campeón */
+.mission-cake {
+  position: absolute;
+  left: 50%;
+  bottom: -38%;
+  width: 90%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+.mission-cake.drop { animation: cakedrop .7s cubic-bezier(.5, 0, .7, 1.4) forwards; }
+@keyframes cakedrop {
+  0%   { transform: translate(-50%, -360px) rotate(-25deg); opacity: 1; }
+  75%  { transform: translate(-50%, 0) rotate(4deg); opacity: 1; }
+  88%  { transform: translate(-50%, -10px) rotate(-2deg); opacity: 1; }
+  100% { transform: translate(-50%, 0) rotate(0); opacity: 1; }
+}
+.mission-arrow {
+  font-size: 18px;
+  color: var(--cyan);
+  animation: blink .5s steps(2) infinite;
+}
+.mission-stage .face-hat { width: min(22vw, 90px); }
+
+/* ---------- Carrera ---------- */
+.screen.runner {
+  gap: 14px;
+  justify-content: center;
+}
+.run-hud {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.dist-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dist-bar {
+  flex: 1;
+  height: 16px;
+  background: #000;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.dist-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--yellow));
+  transform-origin: left;
+  transition: transform .15s linear;
+}
+.dist-laura {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 2px var(--pink);
+}
+.run-canvas {
+  display: block;
+  width: 100%;
+  height: min(58dvh, 440px);
+  border: 4px solid var(--cyan);
+  border-radius: 10px;
+  box-shadow: 0 0 18px var(--cyan);
+  touch-action: none;
+}
+
+/* ---------- Fiesta ---------- */
+.screen.party {
+  gap: 8px;
+  overflow: hidden;
+}
+.confetti {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.party-title {
+  position: relative;
+  font-size: clamp(13px, 4.6vw, 20px);
+  line-height: 1.5;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 #000;
+  animation: zoom .6s ease-out;
+}
+.party-title span { color: var(--cyan); }
+.party-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 34px;
+}
+.laura-big {
+  width: min(27vw, 110px);
+  animation: hop 1s ease-in-out infinite;
+}
+.party-cake {
+  width: min(34vw, 130px);
+  margin-top: -18px;
+  position: relative;
+}
+.party-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 16px;
+}
+.party-row .face-hat {
+  width: min(16vw, 66px);
+  opacity: 0;
+}
+.party-row .face-hat.in {
+  opacity: 1;
+  animation: partyin .4s cubic-bezier(.2, 1.6, .5, 1), hop .7s ease-in-out .4s infinite;
+}
+.party-row .face-hat:nth-child(2n).in { animation-delay: 0s, .55s; }
+.party-row .face-hat .hat { width: 50%; }
+@keyframes partyin {
+  from { transform: translateY(120px) scale(.3); }
+  to   { transform: translateY(0) scale(1); }
+}
+@keyframes hop {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-14px) rotate(4deg); }
+}
+.party-banner {
+  position: relative;
+  font-size: clamp(16px, 5.5vw, 26px);
+  color: var(--pink);
+  text-shadow: 3px 3px 0 #000, 0 0 14px var(--pink);
+  animation: blink .6s steps(2) infinite;
+}
+.party-end {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  visibility: hidden;
+}
+.party-end.show { visibility: visible; animation: zoom .4s ease-out; }
+
+@media (hover: hover) and (pointer: fine) {
+  .champ, .btn-link { cursor: pointer; }
+}
