@@ -44,15 +44,22 @@
     <!-- Martillo que aparece al golpear -->
     <div class="hammer" id="hammer"></div>
 
-    <!-- Pantalla de inicio -->
-    <section class="screen" id="screen-start">
-      <h1 class="title">PILAR<br><span>SMASH</span></h1>
-      <p class="subtitle">¡MACHACA AL TOPO!</p>
-      <div class="face-row" id="face-row"></div>
-      <p class="info">Toca las caras antes de que se escondan.<br>Tienes 30 segundos.</p>
-      <button class="btn" id="btn-play">JUGAR</button>
-      <p class="info small">RECORD: <span id="best-start">0</span></p>
+    <!-- Pantalla de inicio: la foto original. Al tocar, las caras "salen" de la foto al tablero -->
+    <section class="screen intro" id="screen-start">
+      <h1 class="title intro-title">PILAR <span>SMASH</span></h1>
+      <div class="photo-frame" id="photo-frame">
+        <img src="foto.jpg" alt="Selfie del grupo asomando por una ventana del tejado" id="photo" draggable="false">
+        <div class="scanline" id="scanline"></div>
+        <div class="photo-banner hidden" id="photo-banner">¡6 TOPOS<br>DETECTADOS!</div>
+      </div>
+      <div class="intro-bottom" id="intro-bottom">
+        <button class="btn" id="btn-play">JUGAR</button>
+        <p class="info small">RECORD: <span id="best-start">0</span></p>
+      </div>
     </section>
+
+    <!-- Capa para las caras que vuelan de la foto al tablero -->
+    <div class="fly-layer" id="fly-layer"></div>
 
     <!-- Cuenta atrás -->
     <section class="screen hidden" id="screen-count">
@@ -67,11 +74,13 @@
       <p class="new-record hidden" id="new-record">¡NUEVO RECORD!</p>
       <p class="info">RECORD: <span id="best-end">0</span></p>
       <button class="btn" id="btn-again">REPETIR</button>
+      <button class="btn-link" id="btn-photo">VER LA FOTO</button>
     </section>
 
   </div>
 
   <!-- Script normal (no módulo) para que funcione abriendo el archivo sin servidor -->
+  <script src="faces/caras.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

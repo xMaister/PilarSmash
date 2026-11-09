@@ -6,11 +6,13 @@ Minijuego "machaca al topo" con las caras del grupo. HTML, CSS y JS puros, pensa
 
 | Archivo | Qué hace |
 |---|---|
-| `index.html` | Estructura: marcador, tablero y pantallas de inicio, cuenta atrás y final |
+| `index.html` | Estructura: marcador, tablero y pantallas de inicio (la foto), cuenta atrás y final |
 | `style.css` | Estética arcade, agujeros, animaciones (aplastado, martillo, estrellas) |
 | `game.js` | Lógica del juego, sonidos (Web Audio API), récord en `localStorage` |
+| `foto.jpg` | Foto original: es la pantalla de inicio, de ella salen volando las caras |
 | `faces/1-6.png` | Caras recortadas (círculo con fondo transparente) |
-| `tools/recortar_caras.py` | Script que genera `faces/` a partir de `foto.jpg` |
+| `faces/caras.js` | Posición de cada cara en la foto (para la animación de la intro) |
+| `tools/recortar_caras.py` | Script que genera `faces/` (PNGs y `caras.js`) a partir de `foto.jpg` |
 | `vercel.json`, `.vercelignore` | Configuración del despliegue en Vercel |
 
 ## Probarlo

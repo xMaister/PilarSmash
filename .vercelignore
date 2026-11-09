@@ -1,5 +1,4 @@
-# Solo se publica el juego (index.html, style.css, game.js y faces/).
-# La foto original y el script de recorte se quedan en el repo pero no se suben.
-foto.jpg
+# Solo se publica el juego (index.html, style.css, game.js, foto.jpg y faces/).
+# El script de recorte se queda en el repo pero no se sube.
 tools/
 README.md

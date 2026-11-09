@@ -81,7 +81,8 @@ def recortar(img, cara):
 
     bgra = cv2.cvtColor(cuadro, cv2.COLOR_BGR2BGRA)
     bgra[:, :, 3] = mascara
-    return bgra
+    # Devolvemos también dónde estaba el círculo en la foto (para la animación de la intro)
+    return bgra, (cx, cy, lado, angulo)
 
 
 def main():
@@ -94,10 +95,22 @@ def main():
     print(f"Caras detectadas: {len(caras)}")
 
     os.makedirs(SALIDA, exist_ok=True)
+    alto, ancho = img.shape[:2]
+    posiciones = []
     for i, cara in enumerate(caras, 1):
         ruta = os.path.join(SALIDA, f"{i}.png")
-        cv2.imwrite(ruta, recortar(img, cara))
-        print(f"  {ruta}  caja=({int(cara[0])},{int(cara[1])},{int(cara[2])}x{int(cara[3])})")
+        recorte, (cx, cy, lado, angulo) = recortar(img, cara)
+        cv2.imwrite(ruta, recorte)
+        # Posición relativa (0-1) para que el juego la escale al tamaño de pantalla
+        posiciones.append(f"  {{ x: {cx / ancho:.4f}, y: {cy / alto:.4f}, d: {lado / ancho:.4f}, giro: {angulo:.1f} }},")
+        print(f"  {ruta}  centro=({int(cx)},{int(cy)}) lado={int(lado)} giro={angulo:.1f}")
+
+    # faces/caras.js: el juego lo carga con <script> (funciona sin servidor, a diferencia de un .json)
+    with open(os.path.join(SALIDA, "caras.js"), "w") as f:
+        f.write("// Generado por tools/recortar_caras.py: posición de cada cara en foto.jpg\n")
+        f.write("// x, y = centro (fracción del ancho/alto), d = diámetro (fracción del ancho), giro = grados\n")
+        f.write("window.CARAS_FOTO = [\n" + "\n".join(posiciones) + "\n];\n")
+    print(f"  {SALIDA}/caras.js")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,9 @@ const ui = {
   score: $("score"), best: $("best"), time: $("time"), timebar: $("timebar"),
   start: $("screen-start"), count: $("screen-count"), end: $("screen-end"),
   countdown: $("countdown"), finalScore: $("final-score"), newRecord: $("new-record"),
-  bestStart: $("best-start"), bestEnd: $("best-end"), faceRow: $("face-row"),
+  bestStart: $("best-start"), bestEnd: $("best-end"),
+  photo: $("photo"), photoFrame: $("photo-frame"), scanline: $("scanline"),
+  banner: $("photo-banner"), introBottom: $("intro-bottom"), flyLayer: $("fly-layer"),
 };
 
 // ---------- Estado ----------
@@ -104,6 +106,13 @@ const sonido = {
   record() {
     [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tono("square", f, f, 0.14, 0.18, 0.5 + i * 0.11));
   },
+  // Intro
+  detecta(i) { tono("square", 500 + i * 110, 500 + i * 110, 0.09, 0.12); },
+  alarma() {
+    [880, 660, 880, 660].forEach((f, i) => tono("square", f, f, 0.12, 0.12, i * 0.14));
+  },
+  vuela()    { tono("sine", 300, 1200, 0.25, 0.12); },
+  plop()     { tono("sine", 650, 140, 0.14, 0.35); },
 };
 
 /* ==========================================================
@@ -175,16 +184,143 @@ function crearTablero() {
   });
 }
 
-// Precarga las caras y las pone en la pantalla de inicio
+// Precarga las caras para que no parpadeen la primera vez que salen
 function cargarCaras() {
-  for (let i = 1; i <= NUM_CARAS; i++) {
-    const img = new Image();
-    img.src = `faces/${i}.png`;
-    img.alt = "";
-    img.draggable = false;
-    img.style.animationDelay = `${i * 0.12}s`;
-    ui.faceRow.appendChild(img);
-  }
+  for (let i = 1; i <= NUM_CARAS; i++) new Image().src = `faces/${i}.png`;
+}
+
+/* ==========================================================
+   INTRO: DE LA FOTO AL TABLERO
+   1. Un escáner barre la foto y marca cada cara al pasar.
+   2. La foto se oscurece: "¡6 TOPOS DETECTADOS!".
+   3. Cada cara sale volando de la foto a un agujero y se mete dentro.
+   4. Empieza la cuenta atrás.
+   Las posiciones de las caras vienen de faces/caras.js (las genera el script de recorte).
+   ========================================================== */
+const DUR_ESCANER = 1500;   // ms que tarda el escáner en bajar (igual que en style.css)
+const DUR_VUELO = 700;      // ms de vuelo de cada cara
+const RETRASO_VUELO = 120;  // ms entre una cara y la siguiente
+let animandoIntro = false;
+
+function introAnimada() {
+  if (animandoIntro) return;
+  animandoIntro = true;
+  iniciarAudio();
+  resetearMarcador();
+
+  const caras = window.CARAS_FOTO || [];
+  if (!caras.length) { animandoIntro = false; cuentaAtras(); return; } // sin datos: directo al juego
+
+  ui.introBottom.style.visibility = "hidden";
+  ui.scanline.classList.add("run");
+
+  // Coordenadas relativas a #app, que es donde se posicionan las caras voladoras
+  const appR = app.getBoundingClientRect();
+  const fotoR = ui.photo.getBoundingClientRect();
+
+  // Creamos una cara encima de cada cara de la foto, en su sitio exacto y con su inclinación
+  const voladoras = caras.map((c, i) => {
+    const d = c.d * fotoR.width;
+    const cx = fotoR.left - appR.left + c.x * fotoR.width;
+    const cy = fotoR.top - appR.top + c.y * fotoR.height;
+    const el = document.createElement("img");
+    el.src = `faces/${i + 1}.png`;
+    el.className = "flyer";
+    el.alt = "";
+    Object.assign(el.style, {
+      width: d + "px", height: d + "px",
+      left: cx - d / 2 + "px", top: cy - d / 2 + "px",
+      transform: `rotate(${c.giro}deg)`, opacity: 0,
+    });
+    ui.flyLayer.appendChild(el);
+
+    // Aparece cuando la línea del escáner pasa por su centro
+    setTimeout(() => {
+      el.style.opacity = 1;
+      el.animate([
+        { transform: `rotate(${c.giro}deg) scale(.6)` },
+        { transform: `rotate(${c.giro}deg) scale(1.15)` },
+        { transform: `rotate(${c.giro}deg) scale(1)` },
+      ], { duration: 300, easing: "ease-out" });
+      sonido.detecta(i);
+    }, c.y * DUR_ESCANER);
+
+    return { el, giro: c.giro, cx, cy, d };
+  });
+
+  // Foto oscurecida + cartel
+  setTimeout(() => {
+    ui.photoFrame.classList.add("dim");
+    ui.banner.classList.remove("hidden");
+    sonido.alarma();
+  }, DUR_ESCANER + 100);
+
+  setTimeout(() => volarAlTablero(voladoras, appR), DUR_ESCANER + 1300);
+}
+
+function volarAlTablero(voladoras, appR) {
+  // La foto se desvanece y deja ver el tablero (las caras siguen encima, en su capa)
+  ui.start.classList.add("fade");
+  setTimeout(() => ui.start.classList.add("hidden"), 450);
+
+  // 6 agujeros distintos al azar
+  const destinos = agujeros.slice().sort(() => Math.random() - 0.5).slice(0, voladoras.length);
+
+  // Medimos dónde queda cada cara cuando está fuera del agujero, para aterrizar justo ahí
+  const rects = destinos.map((a, i) => {
+    a.img.src = `faces/${i + 1}.png`;
+    a.el.classList.add("instant", "up");
+    const r = a.el.querySelector(".mole").getBoundingClientRect();
+    a.el.classList.remove("up");
+    return r;
+  });
+  void board.offsetWidth;
+  destinos.forEach((a) => a.el.classList.remove("instant"));
+
+  voladoras.forEach((v, i) => {
+    const r = rects[i];
+    const dx = r.left - appR.left + r.width / 2 - v.cx;
+    const dy = r.top - appR.top + r.height / 2 - v.cy;
+    const escala = r.width / v.d;
+    const retraso = i * RETRASO_VUELO;
+
+    // Vuelo en arco: sube, gira y baja hasta el agujero
+    const anim = v.el.animate([
+      { transform: `translate(0, 0) rotate(${v.giro}deg) scale(1)` },
+      { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 90}px) rotate(${v.giro + 200}deg) scale(${Math.max(escala, 1) * 1.1})`, offset: 0.55 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(360deg) scale(${escala})` },
+    ], { duration: DUR_VUELO, delay: retraso, easing: "cubic-bezier(.5, 0, .5, 1)", fill: "forwards" });
+    setTimeout(() => sonido.vuela(), retraso);
+
+    // Al llegar: la cambiamos por la cara del agujero y se mete dentro
+    anim.onfinish = () => {
+      const a = destinos[i];
+      a.el.classList.add("instant", "up");
+      void a.el.offsetWidth;
+      a.el.classList.remove("instant");
+      v.el.remove();
+      sonido.plop();
+      setTimeout(() => a.el.classList.remove("up"), 350);
+    };
+  });
+
+  // Cuando se han escondido todas, cuenta atrás
+  const total = DUR_VUELO + (voladoras.length - 1) * RETRASO_VUELO + 350 + 400;
+  setTimeout(() => {
+    animandoIntro = false;
+    cuentaAtras();
+  }, total);
+}
+
+// Vuelve a dejar la pantalla de la foto como al principio
+function mostrarIntro() {
+  ui.start.classList.remove("fade");
+  ui.photoFrame.classList.remove("dim");
+  ui.banner.classList.add("hidden");
+  ui.scanline.classList.remove("run");
+  ui.introBottom.style.visibility = "";
+  ui.flyLayer.innerHTML = "";
+  mostrar(ui.start);
 }
 
 /* ==========================================================
@@ -391,8 +527,9 @@ crearTablero();
 cargarCaras();
 pintarRecord();
 
-$("btn-play").addEventListener("click", cuentaAtras);
+$("btn-play").addEventListener("click", introAnimada);
 $("btn-again").addEventListener("click", cuentaAtras);
+$("btn-photo").addEventListener("click", mostrarIntro);
 
 // Evitar gestos de zoom de iOS (pellizcar) y el menú contextual al mantener pulsado
 document.addEventListener("gesturestart", (e) => e.preventDefault());
