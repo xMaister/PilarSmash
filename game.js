@@ -252,7 +252,7 @@ function golpear(agujero) {
   puntos++;
   ui.score.textContent = puntos;
   sonido.golpe();
-  if (navigator.vibrate) navigator.vibrate(30);
+  try { navigator.vibrate && navigator.vibrate(30); } catch { /* sin vibración */ }
   efectos(agujero.el);
 
   // Se queda aplastada un momento y se esconde
