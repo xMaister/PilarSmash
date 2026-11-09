@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Sin zoom: escala fija y viewport que cubre el notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1a0b2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Pilar Smash</title>
+  <meta name="description" content="¡Machaca al topo! Minijuego arcade con las caras del grupo.">
+  <link rel="icon" href="faces/1.png">
+  <!-- Tipografía arcade (si no hay internet se usa una monoespaciada) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Marcador superior -->
+    <header class="hud">
+      <div class="hud-box">
+        <span class="hud-label">PUNTOS</span>
+        <span class="hud-value" id="score">0</span>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">RECORD</span>
+        <span class="hud-value" id="best">0</span>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">TIEMPO</span>
+        <span class="hud-value" id="time">30</span>
+      </div>
+    </header>
+
+    <!-- Barra de tiempo -->
+    <div class="timebar"><div class="timebar-fill" id="timebar"></div></div>
+
+    <!-- Tablero 3x3: los agujeros se generan desde game.js -->
+    <main class="board" id="board"></main>
+
+    <!-- Martillo que aparece al golpear -->
+    <div class="hammer" id="hammer"></div>
+
+    <!-- Pantalla de inicio -->
+    <section class="screen" id="screen-start">
+      <h1 class="title">PILAR<br><span>SMASH</span></h1>
+      <p class="subtitle">¡MACHACA AL TOPO!</p>
+      <div class="face-row" id="face-row"></div>
+      <p class="info">Toca las caras antes de que se escondan.<br>Tienes 30 segundos.</p>
+      <button class="btn" id="btn-play">JUGAR</button>
+      <p class="info small">RECORD: <span id="best-start">0</span></p>
+    </section>
+
+    <!-- Cuenta atrás -->
+    <section class="screen hidden" id="screen-count">
+      <div class="countdown" id="countdown">3</div>
+    </section>
+
+    <!-- Pantalla final -->
+    <section class="screen hidden" id="screen-end">
+      <h2 class="title small">¡TIEMPO!</h2>
+      <p class="info">PUNTOS</p>
+      <div class="final-score" id="final-score">0</div>
+      <p class="new-record hidden" id="new-record">¡NUEVO RECORD!</p>
+      <p class="info">RECORD: <span id="best-end">0</span></p>
+      <button class="btn" id="btn-again">REPETIR</button>
+    </section>
+
+  </div>
+
+  <!-- Script normal (no módulo) para que funcione abriendo el archivo sin servidor -->
+  <script src="game.js"></script>
+</body>
+</html>
