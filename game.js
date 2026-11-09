@@ -49,11 +49,44 @@ let audio = null;
 
 // El navegador solo permite crear/activar el audio tras un toque del usuario
 function iniciarAudio() {
+  sonarEnSilencio();
   if (!audio) {
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (Ctx) audio = new Ctx();
   }
   if (audio && audio.state === "suspended") audio.resume();
+}
+
+// En iPhone, con el interruptor lateral en silencio, Web Audio no suena.
+// Dos trucos para que se oiga igualmente (como un vídeo):
+//  1) Safari 17+: pedir la sesión de audio de tipo "reproducción".
+//  2) Resto: reproducir en bucle un <audio> con silencio; eso cambia la sesión de audio del sistema.
+function sonarEnSilencio() {
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch { /* no soportado */ }
+  if (sonarEnSilencio.hecho) return;
+  sonarEnSilencio.hecho = true;
+  try {
+    const el = new Audio(wavSilencio());
+    el.loop = true;
+    el.setAttribute("playsinline", "");
+    el.play().catch(() => {});
+  } catch { /* sin <audio>: no pasa nada */ }
+}
+
+// Medio segundo de silencio en WAV (8 kHz, 8 bits), creado al vuelo como data: URI
+function wavSilencio() {
+  const n = 4000;
+  const b = new Uint8Array(44 + n);
+  const dv = new DataView(b.buffer);
+  const txt = (o, s) => [...s].forEach((c, i) => (b[o + i] = c.charCodeAt(0)));
+  txt(0, "RIFF"); dv.setUint32(4, 36 + n, true); txt(8, "WAVEfmt ");
+  dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+  dv.setUint32(24, 8000, true); dv.setUint32(28, 8000, true); dv.setUint16(32, 1, true); dv.setUint16(34, 8, true);
+  txt(36, "data"); dv.setUint32(40, n, true);
+  b.fill(128, 44); // 128 = silencio en 8 bits
+  let bin = "";
+  b.forEach((x) => (bin += String.fromCharCode(x)));
+  return "data:audio/wav;base64," + btoa(bin);
 }
 
 // Tono simple con envolvente: tipo de onda, frecuencia inicial y final, duración, volumen
