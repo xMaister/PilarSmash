@@ -71,6 +71,30 @@
 
   .cta { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); z-index: 6; font-size: 22px; white-space: nowrap;
     color: var(--cyan); text-shadow: 0 0 12px var(--cyan), 3px 3px 0 #000; }
+
+  /* ---- v3: todo lo importante dentro del cuadrado central (x 285-915) ---- */
+  .ribbon { top: 18px; font-size: 15px; padding: 13px 26px; }
+  .ribbon::before, .ribbon::after { top: 9px; width: 30px; }
+  .ribbon::before { left: -20px; } .ribbon::after { right: -20px; }
+  .logo { top: 74px; }
+  .logo h1 { font-size: 66px; letter-spacing: 2px; -webkit-text-stroke: 2px #1a0530;
+    filter: drop-shadow(5px 5px 0 var(--cyan)) drop-shadow(5px 5px 0 #000) drop-shadow(0 0 18px rgba(46,242,255,.6)); }
+  .faces { position: absolute; left: 50%; top: 236px; transform: translateX(-50%); z-index: 5;
+    display: grid; grid-template-columns: repeat(3, 166px); gap: 14px 22px; }
+  .faces img { width: 166px; height: 166px; border-radius: 50%; border: 5px solid #fff;
+    box-shadow: 0 0 0 5px var(--pink), 0 0 26px var(--pink); }
+  .faces img:nth-child(even) { box-shadow: 0 0 0 5px var(--cyan), 0 0 26px var(--cyan); }
+  .faces img:nth-child(1) { transform: rotate(-8deg); } .faces img:nth-child(2) { transform: translateY(-8px) rotate(5deg); }
+  .faces img:nth-child(3) { transform: rotate(9deg); }  .faces img:nth-child(4) { transform: rotate(6deg); }
+  .faces img:nth-child(5) { transform: translateY(8px) rotate(-5deg); } .faces img:nth-child(6) { transform: rotate(-9deg); }
+  /* Alas laterales (solo se ven cuando WhatsApp enseña la tarjeta ancha) */
+  .badge { right: 50px; top: 70px; }
+  .side-rating { position: absolute; right: 44px; top: 330px; width: 220px; display: flex; flex-direction: column; align-items: center; gap: 16px; z-index: 6; }
+  .side-rating .stars { gap: 4px; } .side-rating .star { width: 36px; height: 36px; }
+  .side-rating .score { font-size: 40px; }
+  .hammer { width: 250px; left: 30px; top: 250px; transform: rotate(-12deg); }
+  .boom { left: 40px; top: 170px; font-size: 34px; }
+  .cta { left: 128px; bottom: 34px; transform: none; font-size: 16px; }
 </style></head>
 <body>
   <div class="rays"></div>
@@ -79,25 +103,12 @@
   <div class="horizon"></div>
 
   <div class="ribbon">EL MEJOR JUEGO DE TODOS LOS TIEMPOS</div>
-
-  <!-- caras alrededor del logo (con estelas de velocidad) -->
-  <div class="speed" style="left:28px;top:150px;width:110px;transform:rotate(-24deg)"></div>
-  <img class="face" src="../faces/1.png" style="left:92px;top:140px;width:128px;transform:rotate(-12deg)">
-  <img class="face c" src="../faces/3.png" style="left:92px;top:420px;width:108px;transform:rotate(10deg)">
-  <img class="face c" src="../faces/4.png" style="left:296px;top:438px;width:96px;transform:rotate(-8deg)">
-  <div class="speed" style="left:1080px;top:350px;width:110px;transform:rotate(200deg)"></div>
-  <img class="face" src="../faces/5.png" style="left:968px;top:262px;width:120px;transform:rotate(9deg)">
-  <img class="face c" src="../faces/6.png" style="left:1030px;top:410px;width:118px;transform:rotate(-10deg)">
-  <img class="face" src="../faces/2.png" style="left:822px;top:440px;width:98px;transform:rotate(12deg)">
-
   <div class="logo"><h1>PILAR<br><span>SMASH</span></h1></div>
 
-  <div class="rating">
-    <div class="stars"><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i></div>
-    <div class="score">10/10</div>
+  <div class="faces">
+    <img src="../faces/1.png"><img src="../faces/2.png"><img src="../faces/3.png">
+    <img src="../faces/4.png"><img src="../faces/5.png"><img src="../faces/6.png">
   </div>
-
-  <div class="badge"><div>JUEGO<br>DEL AÑO<b>2026</b></div></div>
 
   <div class="boom">¡POW!</div>
   <svg class="hammer" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -112,6 +123,11 @@
     </g>
   </svg>
 
-  <div class="cta">&gt; TOCA PARA JUGAR &lt;</div>
+  <div class="badge"><div>JUEGO<br>DEL AÑO<b>2026</b></div></div>
+  <div class="side-rating">
+    <div class="stars"><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i></div>
+    <div class="score">10/10</div>
+  </div>
+
   <div class="scan"></div>
 </body></html>
