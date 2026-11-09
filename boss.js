@@ -218,6 +218,7 @@ function iniciarBoss() {
 
   boss.alertSub.textContent = " ";
   boss.alertSub.classList.remove("show");
+  pararMusica();
   mostrar(boss.alert);
   sirena();
   if (navigator.vibrate) try { navigator.vibrate([200, 100, 200, 100, 200]); } catch { /* nada */ }
@@ -313,6 +314,7 @@ function empezarCarrera() {
     ultimo: performance.now(),
   };
   boss.hint.style.visibility = "";
+  empezarMusica(TEMA_CARRERA);
   requestAnimationFrame(bucleCarrera);
 }
 
@@ -420,6 +422,7 @@ function actualizarCarrera(dt) {
     if (R.restante <= 0) {
       R.estado = "entrega";
       R.obst = [];
+      pararMusica();
       sonidoBoss.entrega();
     }
   } else if (R.estado === "entrega") {
@@ -645,6 +648,7 @@ function empezarConfeti() {
 
 // Para todo lo de la fase boss (al repetir o volver a la foto)
 function pararBoss() {
+  pararMusica();
   timersBoss.forEach(clearTimeout);
   timersBoss = [];
   run = null;

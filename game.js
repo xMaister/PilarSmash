@@ -168,7 +168,9 @@ function crearTablero() {
   for (let i = 0; i < NUM_AGUJEROS; i++) {
     const el = document.createElement("div");
     el.className = "hole";
-    el.innerHTML = `<div class="mask"><div class="mole"><img src="faces/1.png" alt="" draggable="false"></div></div>`;
+    // .target y .dale: diana y cartelito que indican dónde dar (solo se ven con la cara fuera)
+    el.innerHTML = `<div class="mask"><div class="mole"><img src="faces/1.png" alt="" draggable="false">` +
+      `<div class="target"></div><div class="dale">¡DALE!</div></div></div>`;
     const agujero = { el, img: el.querySelector("img"), ocupado: false, golpeado: false, cara: 0, timer: null };
     agujeros.push(agujero);
     board.appendChild(el);
@@ -317,6 +319,7 @@ function volarAlTablero(voladoras, appR) {
 
 // Vuelve a dejar la pantalla de la foto como al principio
 function mostrarIntro() {
+  pararMusica();
   ui.start.classList.remove("fade");
   ui.photoFrame.classList.remove("dim");
   ui.banner.classList.add("hidden");
@@ -428,6 +431,7 @@ function mostrar(pantalla) {
 // Cuenta atrás 3, 2, 1, ¡YA! y empieza
 function cuentaAtras() {
   iniciarAudio();
+  pararMusica();
   resetearMarcador();
   mostrar(ui.count);
   let n = 3;
@@ -459,6 +463,11 @@ function empezar() {
   mostrar(null);
   jugando = true;
   bossLanzado = false;
+  empezarMusica(TEMA_TOPOS);
+  // Cartel "¡DALE EN LA CABEZA!" sobre el tablero al empezar
+  const cartel = $("hit-banner");
+  cartel.classList.remove("hidden");
+  setTimeout(() => cartel.classList.add("hidden"), 1900);
   inicio = performance.now();
   programarAparicion(300);
   requestAnimationFrame(actualizarTiempo);
@@ -495,6 +504,7 @@ function actualizarTiempo() {
 
 function terminar() {
   jugando = false;
+  pararMusica();
   clearTimeout(timerAparicion);
   agujeros.forEach(esconder);
   ui.time.textContent = 0;

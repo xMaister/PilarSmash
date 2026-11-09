@@ -9,6 +9,7 @@ Minijuego "machaca al topo" con las caras del grupo. HTML, CSS y JS puros, pensa
 | `index.html` | Estructura: marcador, tablero y pantallas de inicio (la foto), cuenta atrás y final |
 | `style.css` | Estética arcade, agujeros, animaciones (aplastado, martillo, estrellas) |
 | `game.js` | Lógica de los topos, intro de la foto, sonidos (Web Audio API), récord en `localStorage` |
+| `musica.js` | Banda sonora chiptune (Web Audio): un tema para los topos y otro para la carrera |
 | `boss.js` | Fase boss: ¡alerta!, elige campeón, carrera con la tarta hasta Laura y fiesta de cumpleaños |
 | `foto.jpg` | Foto original: es la pantalla de inicio, de ella salen volando las caras |
 | `faces/1-6.png` | Caras recortadas (círculo con fondo transparente) |

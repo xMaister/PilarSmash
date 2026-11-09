@@ -145,7 +145,7 @@ body::after {
   position: absolute;
   left: 0;
   right: 0;
-  top: -20%;
+  top: -34%; /* hueco encima para el cartelito "¡DALE!" */
   bottom: 19%; /* = centro de la elipse */
   overflow: hidden;
   pointer-events: none;
@@ -175,6 +175,75 @@ body::after {
   transform: translateY(-4%);
   transition: transform .12s cubic-bezier(.2, 1.6, .5, 1); /* sube con rebote */
 }
+/* Diana giratoria y cartelito "¡DALE!" sobre cada cara que asoma */
+.target {
+  position: absolute;
+  inset: -7%;
+  border: 3px dashed var(--yellow);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.hole.up:not(.hit) .target {
+  opacity: 1;
+  animation: target 1.4s linear infinite;
+}
+@keyframes target {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.07); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.dale {
+  position: absolute;
+  left: 50%;
+  bottom: 102%;
+  transform: translateX(-50%);
+  padding: 3px 5px;
+  border-radius: 4px;
+  background: var(--yellow);
+  color: #000;
+  font-size: clamp(8px, 2.4vw, 11px);
+  white-space: nowrap;
+  box-shadow: 0 2px 0 #b8860b;
+  opacity: 0;
+  pointer-events: none;
+}
+.hole.up:not(.hit) .dale {
+  opacity: 1;
+  animation: dale .4s ease-in-out infinite alternate;
+}
+@keyframes dale {
+  from { transform: translate(-50%, 0); }
+  to   { transform: translate(-50%, -4px); }
+}
+
+/* Cartel "¡DALE EN LA CABEZA!" al empezar */
+.hit-banner {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  z-index: 30;
+  transform: translate(-50%, -50%) rotate(-4deg);
+  padding: 14px 18px;
+  background: #000;
+  border: 3px solid var(--yellow);
+  box-shadow: 0 0 18px var(--yellow);
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--pink);
+  font-size: clamp(16px, 5.5vw, 24px);
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: banner 1.9s ease-out forwards;
+}
+@keyframes banner {
+  0%   { transform: translate(-50%, -50%) rotate(-4deg) scale(2.2); opacity: 0; }
+  12%  { transform: translate(-50%, -50%) rotate(-4deg) scale(1);   opacity: 1; }
+  80%  { transform: translate(-50%, -50%) rotate(-4deg) scale(1);   opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(-4deg) scale(.9);  opacity: 0; }
+}
+
 /* Cara aplastada */
 .hole.hit .mole img {
   animation: squash .38s ease-out forwards;
