@@ -54,3 +54,7 @@ python tools/recortar_caras.py foto.jpg face_detection_yunet_2023mar.onnx
 ```
 
 `LADO_OJOS` en el script controla lo abierto o cerrado del recorte.
+
+## Tarjeta para compartir
+
+`og-v2.jpg` es la imagen que sale al pegar el enlace en WhatsApp. Se genera desde `tools/tarjeta.html`: ábrelo en Chrome a 1200x630 y haz una captura. Si la cambias, guárdala con otro nombre (`og-v3.jpg`...) y actualiza `og:image` en `index.html`: WhatsApp guarda en caché las imágenes por su URL.

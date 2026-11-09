@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root { --pink: #ff2e88; --yellow: #ffd23f; --cyan: #2ef2ff; --bg: #12051f; --purple: #3a0f6e; }
+  * { margin: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; overflow: hidden; position: relative; background: var(--bg);
+    font-family: "Press Start 2P", monospace; color: #fff; }
+
+  /* Rayos de sol detrás del logo */
+  .rays { position: absolute; left: 50%; top: 46%; width: 1900px; height: 1900px; transform: translate(-50%, -50%);
+    background: repeating-conic-gradient(from 0deg, #4a1590 0 7deg, #250a45 7deg 14deg);
+    -webkit-mask: radial-gradient(circle, #000 0 22%, transparent 60%); mask: radial-gradient(circle, #000 0 22%, transparent 60%); }
+  .glow { position: absolute; left: 50%; top: 44%; width: 760px; height: 420px; transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse, rgba(255,46,136,.55), transparent 65%); }
+
+  /* Suelo synthwave */
+  .grid { position: absolute; left: -300px; right: -300px; bottom: -40px; height: 230px;
+    background:
+      linear-gradient(transparent 0 92%, var(--cyan) 92%) 0 0 / 100% 34px,
+      linear-gradient(90deg, transparent 0 96%, var(--cyan) 96%) 0 0 / 60px 100%;
+    transform: perspective(300px) rotateX(58deg); transform-origin: 50% 0; opacity: .55; }
+  .horizon { position: absolute; left: 0; right: 0; bottom: 188px; height: 4px; background: var(--pink); box-shadow: 0 0 24px 6px var(--pink); }
+
+  .scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.2) 0 2px, transparent 2px 4px); z-index: 20; }
+
+  /* Cinta superior */
+  .ribbon { position: absolute; left: 50%; top: 34px; transform: translateX(-50%) rotate(-2deg); z-index: 6;
+    background: var(--yellow); color: #000; font-size: 22px; padding: 16px 40px; white-space: nowrap;
+    box-shadow: 0 7px 0 #b8860b, 0 0 30px rgba(255,210,63,.7); }
+  .ribbon::before, .ribbon::after { content: ""; position: absolute; top: 12px; width: 40px; height: 100%; background: #c99a0f; z-index: -1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 30% 50%); }
+  .ribbon::before { left: -28px; }
+  .ribbon::after { right: -28px; transform: scaleX(-1); }
+
+  /* Logo */
+  .logo { position: absolute; left: 50%; top: 128px; transform: translateX(-50%) rotate(-3deg); text-align: center; z-index: 5; }
+  .logo h1 { font-size: 118px; line-height: 1.08; letter-spacing: 4px;
+    background: linear-gradient(180deg, #fff6c2 0%, var(--yellow) 42%, #ff8a00 52%, var(--pink) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-text-stroke: 3px #1a0530;
+    filter: drop-shadow(7px 7px 0 var(--cyan)) drop-shadow(7px 7px 0 #000) drop-shadow(0 0 22px rgba(46,242,255,.6)); }
+  .logo h1 span { background: linear-gradient(180deg, #e9fdff 0%, var(--cyan) 45%, #1677ff 55%, #8a2eff 100%);
+    -webkit-background-clip: text; background-clip: text; }
+
+  /* Estrellas + nota */
+  .rating { position: absolute; left: 50%; top: 432px; transform: translateX(-50%); display: flex; align-items: center; gap: 24px; z-index: 6; }
+  .stars { display: flex; gap: 8px; }
+  .star { width: 44px; height: 44px; background: var(--yellow); filter: drop-shadow(3px 3px 0 #b8860b) drop-shadow(0 0 8px var(--yellow));
+    clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+  .score { font-size: 30px; color: #fff; text-shadow: 4px 4px 0 var(--pink); }
+
+  /* Sello "Juego del año" */
+  .badge { position: absolute; right: 58px; top: 50px; width: 190px; height: 190px; z-index: 7; transform: rotate(12deg);
+    display: grid; place-items: center; text-align: center; color: #000; font-size: 15px; line-height: 1.6;
+    background: var(--pink);
+    clip-path: polygon(50% 0%, 61% 11%, 75% 4%, 79% 19%, 95% 21%, 90% 36%, 100% 50%, 90% 64%, 95% 79%, 79% 81%, 75% 96%, 61% 89%, 50% 100%, 39% 89%, 25% 96%, 21% 81%, 5% 79%, 10% 64%, 0% 50%, 10% 36%, 5% 21%, 21% 19%, 25% 4%, 39% 11%); }
+  .badge b { display: block; font-size: 30px; color: #fff; text-shadow: 3px 3px 0 #000; }
+
+  /* Caras volando */
+  .face { position: absolute; border-radius: 50%; border: 4px solid #fff; z-index: 4;
+    box-shadow: 0 0 0 4px var(--pink), 0 0 26px var(--pink); }
+  .face.c { box-shadow: 0 0 0 4px var(--cyan), 0 0 26px var(--cyan); }
+  .speed { position: absolute; height: 6px; border-radius: 3px; background: linear-gradient(90deg, transparent, #fff); z-index: 3; opacity: .8; }
+
+  /* Martillo */
+  .hammer { position: absolute; width: 230px; left: 44px; top: 300px; transform: rotate(-20deg); z-index: 6;
+    filter: drop-shadow(0 0 16px rgba(255,46,136,.8)); }
+  .boom { position: absolute; left: 42px; top: 268px; font-size: 26px; color: var(--yellow); z-index: 7; transform: rotate(-14deg);
+    text-shadow: 3px 3px 0 var(--pink), 6px 6px 0 #000; }
+
+  .cta { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); z-index: 6; font-size: 22px; white-space: nowrap;
+    color: var(--cyan); text-shadow: 0 0 12px var(--cyan), 3px 3px 0 #000; }
+</style></head>
+<body>
+  <div class="rays"></div>
+  <div class="glow"></div>
+  <div class="grid"></div>
+  <div class="horizon"></div>
+
+  <div class="ribbon">EL MEJOR JUEGO DE TODOS LOS TIEMPOS</div>
+
+  <!-- caras alrededor del logo (con estelas de velocidad) -->
+  <div class="speed" style="left:28px;top:150px;width:110px;transform:rotate(-24deg)"></div>
+  <img class="face" src="../faces/1.png" style="left:92px;top:140px;width:128px;transform:rotate(-12deg)">
+  <img class="face c" src="../faces/3.png" style="left:92px;top:420px;width:108px;transform:rotate(10deg)">
+  <img class="face c" src="../faces/4.png" style="left:296px;top:438px;width:96px;transform:rotate(-8deg)">
+  <div class="speed" style="left:1080px;top:350px;width:110px;transform:rotate(200deg)"></div>
+  <img class="face" src="../faces/5.png" style="left:968px;top:262px;width:120px;transform:rotate(9deg)">
+  <img class="face c" src="../faces/6.png" style="left:1030px;top:410px;width:118px;transform:rotate(-10deg)">
+  <img class="face" src="../faces/2.png" style="left:822px;top:440px;width:98px;transform:rotate(12deg)">
+
+  <div class="logo"><h1>PILAR<br><span>SMASH</span></h1></div>
+
+  <div class="rating">
+    <div class="stars"><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i><i class="star"></i></div>
+    <div class="score">10/10</div>
+  </div>
+
+  <div class="badge"><div>JUEGO<br>DEL AÑO<b>2026</b></div></div>
+
+  <div class="boom">¡POW!</div>
+  <svg class="hammer" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <line x1="90" y1="90" x2="30" y2="30" stroke="#000" stroke-width="13" stroke-linecap="round"/>
+    <line x1="90" y1="90" x2="30" y2="30" stroke="#ffd23f" stroke-width="8" stroke-linecap="round"/>
+    <g transform="translate(28 28) rotate(-45)">
+      <rect x="-26" y="-14" width="52" height="28" rx="6" fill="#000"/>
+      <rect x="-23" y="-11" width="46" height="22" rx="4" fill="#ff2e88"/>
+      <rect x="-23" y="-11" width="10" height="22" rx="3" fill="#2ef2ff"/>
+      <rect x="13" y="-11" width="10" height="22" rx="3" fill="#2ef2ff"/>
+      <rect x="-10" y="-8" width="20" height="5" rx="2" fill="#fff" opacity=".6"/>
+    </g>
+  </svg>
+
+  <div class="cta">&gt; TOCA PARA JUGAR &lt;</div>
+  <div class="scan"></div>
+</body></html>
